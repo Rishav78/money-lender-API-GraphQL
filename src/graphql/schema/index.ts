@@ -9,6 +9,13 @@ const Schema: GraphQLSchema = buildSchema(`
         expireIn: Int!
     }
 
+    type Loan {
+        _id: ID!
+        user: ID!
+        money: Int!
+        moneylender: ID!
+    }
+
     type User {
         _id: ID!
         firstname: String!
@@ -34,14 +41,23 @@ const Schema: GraphQLSchema = buildSchema(`
         money: Int!
     }
 
+    input inputLoan {
+        user: ID!
+        money: Int!
+        moneylender: ID!
+    }
+
     type RootQuery {
         login(email: String!, password: String!): AuthenticationData!
         getUsers: [User!]!
+        getUser(email: String!): User
+        getLoans(user: ID, moneylender: ID): [Loan!]!
     }
 
     type RootMutation {
         createUser(InputUser: inputUser): User!
         createMoneyLender(InputMoneyLender: inputMoneyLender): User!
+        createLoan(InputLoan: inputLoan): Loan!
     }
 
     schema {
