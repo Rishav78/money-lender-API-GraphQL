@@ -13,9 +13,17 @@ const userInfoSchema: Schema = new Schema({
         type: String,
         required: true,
     },
+    money: {
+        type: Number,
+    },
+    role: {
+        type: Number,
+        required: true
+    },
     loans: [{
         type: Schema.Types.ObjectId,
-        ref: 'loans'
+        ref: 'loans',
+        default: []
     }],
 },{
     timestamps: true

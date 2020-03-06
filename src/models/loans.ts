@@ -12,9 +12,11 @@ const loansSchema: Schema = new Schema({
     },
     moneylender: {
         type: Schema.Types.ObjectId,
-        ref: 'moneylendersinfos',
+        ref: 'userinfos',
         required: true
     }
 }, {
     timestamps: true
 });
+
+export default mongoose.model('loans', loansSchema);

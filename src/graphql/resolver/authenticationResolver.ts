@@ -2,7 +2,8 @@ import { Request } from 'express';
 import { compare, hash } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { Document } from 'mongoose';
-import User, { userDocument } from '../../models/users';
+import User from '../../models/users';
+import UserInfo from '../../models/userInfos';
 
 interface AuthenticationData {
     "email": string,
@@ -14,9 +15,17 @@ interface User {
         "firstname": string,
         "lastname": string,
         "email": string,
+        "password": string
+    }
+}
+
+interface MoneyLender {
+    "InputMoneyLender": {
+        "firstname": string,
+        "lastname": string,
+        "email": string,
         "password": string,
         "money": number,
-        "role": number,
     }
 }
 
@@ -40,9 +49,34 @@ export default {
     },
     createUser: async (args: User, req: Request) => {
         const { email, password: pswd, ...rest } = args.InputUser;
-        const password: string = await hash(pswd, 12);
-        const newUser: Document = new User({ email, password, ...rest });
-        const user: Document = await newUser.save();
-        return user;
+        try {
+            const user:Document | null = await User.findOne({ email });
+            if (user) {
+                throw new Error('user already exists');
+            }
+            const password: string = await hash(pswd, 12);
+            await (new User({ email, password })).save();
+            const newUser = new UserInfo({ email, role: 1, ...rest });
+            return await newUser.save();
+        }
+        catch (err) {
+            throw err;
+        }
+    },
+    createMoneyLender: async (args: MoneyLender, req: Request) => {
+        const { email, password: pswd, ...rest } = args.InputMoneyLender;
+        try {
+            const user:Document | null = await User.findOne({ email });
+            if (user) {
+                throw new Error('user already exists');
+            }
+            const password: string = await hash(pswd, 12);
+            await (new User({ email, password })).save();
+            const newUser = new UserInfo({ email, role: 2, ...rest });
+            return await newUser.save();
+        }
+        catch (err) {
+            throw err;
+        }
     }
 }
