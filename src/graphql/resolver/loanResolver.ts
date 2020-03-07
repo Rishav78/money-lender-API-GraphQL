@@ -17,10 +17,13 @@ type request = Request & {
 
 export default {
     getLoans: async (args: any, req: request) => {
-        if (!req.isAuth) {
-            throw new Error('unauthrized')
-        }
-        const loans: Document[] | null = await Loan.find(args);
+        const select: object = { email: 1, firstname: 1, lastname: 1, role: 1 };
+        // if (!req.isAuth) {
+        //     throw new Error('unauthrized')
+        // }
+        const loans: Document[] | null = await Loan.find(args)
+            .populate('user', select)
+            .populate('moneylender', select);
         return loans;
     },
 

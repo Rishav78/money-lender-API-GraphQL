@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, HookNextFunction } from 'mongoose';
+import slugify from 'slugify';
 
 export type userInfoDocument = Document & {
     "email": string,
@@ -32,12 +33,14 @@ const userInfoSchema: Schema = new Schema({
         required: function() {
             const { role } = this as any;
             return role === 'moneylender';
-        }
+        },
+        min: [100, 'money must be greater or equal to 100']
     },
     role: {
         type: String,
         required: [true, "montion your role"],
-        enum: ['user', 'moneylender']
+        enum: ['user', 'moneylender'],
+        default: 'user'
     },
     loans: [{
         type: Schema.Types.ObjectId,
@@ -50,6 +53,13 @@ const userInfoSchema: Schema = new Schema({
     }
 },{
     timestamps: true
+});
+
+userInfoSchema.pre('save', function(next: HookNextFunction){
+    const { firstname, lastname } = this as userInfoDocument;
+    (this as userInfoDocument).firstname = slugify(firstname, { lower: true });
+    (this as userInfoDocument).lastname = slugify(lastname, { lower: true });
+    next();
 });
 
 userInfoSchema.pre('save', function(next: HookNextFunction) {

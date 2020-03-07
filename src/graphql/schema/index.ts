@@ -10,9 +10,9 @@ const Schema: GraphQLSchema = buildSchema(`
 
     type Loan {
         _id: ID!
-        user: ID!
+        user: User
         money: Int!
-        moneylender: ID!
+        moneylender: User
     }
 
     type User {
@@ -21,7 +21,7 @@ const Schema: GraphQLSchema = buildSchema(`
         lastname: String!
         email: String!
         password: String
-        role: String!
+        role: String
         money: Int
     }
 

@@ -1,4 +1,4 @@
-import mongoose, { Schema, HookNextFunction } from 'mongoose';
+import mongoose, { Schema, HookNextFunction, Document } from 'mongoose';
 
 export type userDocument = mongoose.Document & {
     email: String,
@@ -16,14 +16,19 @@ const userSchema: Schema = new Schema({
     },
     password: {
         type: String,
-        required: true,
-        match: [
-            /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!?])[a-zA-z0-9!?]{8,}/,
-            'password should be of minimum 8 length and must contain special character(?!)'
-        ]
+        required: true
     }
 }, {
     timestamps: true
+});
+
+userSchema.pre('save', function(next: HookNextFunction) {
+    const { email } = this as userDocument;
+    const user: any = this.model('users').findOne({ email });
+    if (!!user) {
+        throw new Error('user already exists');
+    }
+    next();
 });
 
 userSchema.pre('save', function(next: HookNextFunction) {

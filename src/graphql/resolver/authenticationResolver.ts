@@ -48,10 +48,6 @@ export default {
     createUser: async (args: User, req: Request) => {
         const { email, password: pswd, ...rest } = args.InputUser;
         try {
-            const user:Document | null = await User.findOne({ email });
-            if (user) {
-                throw new Error('user already exists');
-            }
             const password: string = await hash(pswd, 12);
             await (new User({ email, password })).save();
             const newUser = new UserInfo({ email, role: 'user', ...rest });
@@ -64,10 +60,6 @@ export default {
     createMoneyLender: async (args: MoneyLender, req: Request) => {
         const { email, password: pswd, ...rest } = args.InputMoneyLender;
         try {
-            const user:Document | null = await User.findOne({ email });
-            if (user) {
-                throw new Error('user already exists');
-            }
             const password: string = await hash(pswd, 12);
             await (new User({ email, password })).save();
             const newUser = new UserInfo({ email, role: 'moneylender', ...rest });
