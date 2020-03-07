@@ -6,7 +6,8 @@ export type userInfoDocument = Document & {
     "lastname": string,
     "money"?: number,
     "role": string,
-    "loans": string[]
+    "loans": string[],
+    "image": string,
 };
 
 const userInfoSchema: Schema = new Schema({
@@ -30,7 +31,7 @@ const userInfoSchema: Schema = new Schema({
         type: Number,
         required: function() {
             const { role } = this as any;
-            return role == 'moneylender';
+            return role === 'moneylender';
         }
     },
     role: {
@@ -43,6 +44,10 @@ const userInfoSchema: Schema = new Schema({
         ref: 'loans',
         default: []
     }],
+    image: {
+        type: String,
+        default: 'default.png'
+    }
 },{
     timestamps: true
 });

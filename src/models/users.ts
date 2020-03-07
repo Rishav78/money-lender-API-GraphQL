@@ -12,11 +12,15 @@ const userSchema: Schema = new Schema({
         match: [
             /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
             'please provide a valid email'
-        ]
+        ],
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        match: [
+            /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!?])[a-zA-z0-9!?]{8,}/,
+            'password should be of minimum 8 length and must contain special character(?!)'
+        ]
     }
 }, {
     timestamps: true
