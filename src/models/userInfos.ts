@@ -32,6 +32,7 @@ const userInfoSchema: Schema = new Schema({
         type: Number,
         required: function() {
             const { role } = this as any;
+            console.log(role=== 'moneylender')
             return role === 'moneylender';
         },
         min: [0, 'money must be greater or equal to 0']

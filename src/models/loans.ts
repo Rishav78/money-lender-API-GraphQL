@@ -1,4 +1,11 @@
-import mongoose, { Schema, HookNextFunction } from 'mongoose';
+import mongoose, { Schema, HookNextFunction, Document } from 'mongoose';
+import { userInfoDocument } from './userInfos';
+
+type LoanDocument = Document & {
+    "user": string,
+    "money": number,
+    "moneylender": string
+};
 
 const loansSchema: Schema = new Schema({
     user: {
@@ -21,9 +28,19 @@ const loansSchema: Schema = new Schema({
 });
 
 loansSchema.pre('save', async function(next: HookNextFunction) {
+    const { moneylender, money }  = this as LoanDocument;
+    const lender: any = await this.model('userinfos').findById(moneylender);
+    const { money: lendermoney } = lender;
+    if( lendermoney - money < 0 ) {
+        throw new Error('not enough money');
+    }
+    next();
+});
+
+loansSchema.pre('save', async function(next: HookNextFunction) {
     const { user, moneylender, money } = this as any;
-    await this.model('users').findByIdAndUpdate(moneylender, { $inc: { money: -money }, $push: { loans: this._id } });
-    await this.model('users').findByIdAndUpdate(user, { $push: { loans: this._id } });
+    await this.model('userinfos').findByIdAndUpdate(moneylender, { $inc: { money: -money }, $push: { loans: this._id } });
+    await this.model('userinfos').findByIdAndUpdate(user, { $push: { loans: this._id } });
     console.log(`user with id ${user} take loan of ${money} from moneylender having id ${moneylender}`);
     next();
 });

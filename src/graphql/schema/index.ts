@@ -50,6 +50,7 @@ const Schema: GraphQLSchema = buildSchema(`
     type RootMutation {
         createUser(InputUser: inputUser): User!
         createLoan(InputLoan: inputLoan): Loan!
+        payLoan(_id: ID!, money: Int!): Loan!
     }
 
     schema {
