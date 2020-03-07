@@ -11,15 +11,25 @@ interface Loan {
     }
 };
 
+type request = Request & {
+    "isAuth": boolean
+}
+
 export default {
-    getLoans: async (args: any, req: Request) => {
+    getLoans: async (args: any, req: request) => {
+        if (!req.isAuth) {
+            throw new Error('unauthrized')
+        }
         const loans: Document[] | null = await Loan.find(args);
         return loans;
     },
-    createLoan: async (args: Loan, req: Request) => {
-        console.log(args)
+    
+    createLoan: async (args: Loan, req: request) => {
         const { moneylender, money, user }  = args.InputLoan;
         try {
+            if (!req.isAuth) {
+                throw new Error('unauthrized')
+            }
             const usr: any = await User.findById(moneylender);
             const { money:lendersmoney } = usr;
             if (lendersmoney<money) {
