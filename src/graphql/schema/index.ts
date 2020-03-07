@@ -30,7 +30,8 @@ const Schema: GraphQLSchema = buildSchema(`
         lastname: String!
         email: String!
         password: String!
-        money: Int
+        money: Int = 0
+        role: String!
     }
 
     input inputLoan {
@@ -48,7 +49,6 @@ const Schema: GraphQLSchema = buildSchema(`
 
     type RootMutation {
         createUser(InputUser: inputUser): User!
-        createMoneyLender(InputMoneyLender: inputUser): User!
         createLoan(InputLoan: inputLoan): Loan!
     }
 

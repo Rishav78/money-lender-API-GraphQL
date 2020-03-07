@@ -15,17 +15,9 @@ interface User {
         "firstname": string,
         "lastname": string,
         "email": string,
-        "password": string
-    }
-}
-
-interface MoneyLender {
-    "InputMoneyLender": {
-        "firstname": string,
-        "lastname": string,
-        "email": string,
         "password": string,
-        "money": number,
+        "money"?: number,
+        "role": string
     }
 }
 
@@ -50,19 +42,7 @@ export default {
         try {
             const password: string = await hash(pswd, 12);
             await (new User({ email, password })).save();
-            const newUser = new UserInfo({ email, role: 'user', ...rest });
-            return await newUser.save();
-        }
-        catch (err) {
-            throw err;
-        }
-    },
-    createMoneyLender: async (args: MoneyLender, req: Request) => {
-        const { email, password: pswd, ...rest } = args.InputMoneyLender;
-        try {
-            const password: string = await hash(pswd, 12);
-            await (new User({ email, password })).save();
-            const newUser = new UserInfo({ email, role: 'moneylender', ...rest });
+            const newUser = new UserInfo({ email, ...rest });
             return await newUser.save();
         }
         catch (err) {

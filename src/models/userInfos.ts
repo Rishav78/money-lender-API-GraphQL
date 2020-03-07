@@ -34,7 +34,7 @@ const userInfoSchema: Schema = new Schema({
             const { role } = this as any;
             return role === 'moneylender';
         },
-        min: [100, 'money must be greater or equal to 100']
+        min: [0, 'money must be greater or equal to 0']
     },
     role: {
         type: String,
@@ -53,6 +53,14 @@ const userInfoSchema: Schema = new Schema({
     }
 },{
     timestamps: true
+});
+
+userInfoSchema.pre('save', function(next: HookNextFunction) {
+    const { role, money }  = this as userInfoDocument;
+    if (role === 'user') {
+        (this as userInfoDocument).money = undefined;
+    }
+    next();
 });
 
 userInfoSchema.pre('save', function(next: HookNextFunction){

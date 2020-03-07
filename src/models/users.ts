@@ -22,9 +22,9 @@ const userSchema: Schema = new Schema({
     timestamps: true
 });
 
-userSchema.pre('save', function(next: HookNextFunction) {
+userSchema.pre('save', async function(next: HookNextFunction) {
     const { email } = this as userDocument;
-    const user: any = this.model('users').findOne({ email });
+    const user: any = await this.model('users').findOne({ email });
     if (!!user) {
         throw new Error('user already exists');
     }
