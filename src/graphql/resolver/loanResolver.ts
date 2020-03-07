@@ -23,9 +23,9 @@ type request = Request & {
 export default {
     getLoans: async (args: any, req: request) => {
         const select: object = { email: 1, firstname: 1, lastname: 1, role: 1 };
-        // if (!req.isAuth) {
-        //     throw new Error('unauthrized')
-        // }
+        if (!req.isAuth) {
+            throw new Error('unauthrized')
+        }
         const loans: Document[] | null = await Loan.find(args)
             .populate('user', select)
             .populate('moneylender', select);
@@ -35,9 +35,9 @@ export default {
     createLoan: async (args: RequestLoan, req: request) => {
         const { moneylender, money, user }  = args.InputLoan;
         try {
-            // if (!req.isAuth) {
-            //     throw new Error('unauthrized')
-            // }
+            if (!req.isAuth) {
+                throw new Error('unauthrized')
+            }
             const newLoan: Document = new Loan({ moneylender, money, user });
             return await newLoan.save();;
         }

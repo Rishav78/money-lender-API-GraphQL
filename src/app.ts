@@ -4,7 +4,7 @@ import { default as schema } from './graphql/schema';
 import { default as rootValue } from './graphql/resolver';
 import { auth } from './middlewares/is-auth';
 import './lib/env';
-import './models/db';
+import './config/db';
 
 const app: Express = express();
 const PORT: string | undefined = process.env.PORT;

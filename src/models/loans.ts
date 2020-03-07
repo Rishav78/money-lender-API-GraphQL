@@ -1,5 +1,4 @@
 import mongoose, { Schema, HookNextFunction, Document } from 'mongoose';
-import { userInfoDocument } from './userInfos';
 
 type LoanDocument = Document & {
     "user": string,
