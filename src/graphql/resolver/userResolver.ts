@@ -13,9 +13,9 @@ type request = Request & {
 export default {
     getUsers: async (args: any, req: request) => {
         try {
-            if (!req.isAuth) {
-                throw new Error('unauthrized')
-            }
+            // if (!req.isAuth) {
+            //     throw new Error('unauthrized')
+            // }
             const users = await User.find();
             return users;
         }

@@ -42,9 +42,7 @@ export default {
             throw new Error('invalid password');
         }
         const secret: string = process.env.JSON_WEB_TOKEN_KEY as string;
-        const token: string = sign({ email, _id }, secret, {
-            expiresIn: '1hr'
-        });
+        const token: string = sign({ email, _id }, secret, { expiresIn: '1hr' });
         return { _id, token, expiresIn: 1 };
     },
     createUser: async (args: User, req: Request) => {
@@ -56,7 +54,7 @@ export default {
             }
             const password: string = await hash(pswd, 12);
             await (new User({ email, password })).save();
-            const newUser = new UserInfo({ email, role: 1, ...rest });
+            const newUser = new UserInfo({ email, role: 'user', ...rest });
             return await newUser.save();
         }
         catch (err) {
@@ -72,7 +70,7 @@ export default {
             }
             const password: string = await hash(pswd, 12);
             await (new User({ email, password })).save();
-            const newUser = new UserInfo({ email, role: 2, ...rest });
+            const newUser = new UserInfo({ email, role: 'moneylender', ...rest });
             return await newUser.save();
         }
         catch (err) {
