@@ -1,6 +1,5 @@
 import { buildSchema, GraphQLSchema } from 'graphql';
 
-
 const Schema: GraphQLSchema = buildSchema(`
 
     type AuthenticationData {
@@ -22,7 +21,7 @@ const Schema: GraphQLSchema = buildSchema(`
         lastname: String!
         email: String!
         password: String
-        role: Int
+        role: Int!
         money: Int
     }
 
