@@ -27,9 +27,9 @@ export default {
     createLoan: async (args: Loan, req: request) => {
         const { moneylender, money, user }  = args.InputLoan;
         try {
-            // if (!req.isAuth) {
-            //     throw new Error('unauthrized')
-            // }
+            if (!req.isAuth) {
+                throw new Error('unauthrized')
+            }
             const usr: any = await User.findById(moneylender);
             const { money:lendersmoney } = usr;
             if (lendersmoney<money) {
