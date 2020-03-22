@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { compare, hash } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
-import { Document } from 'mongoose';
+import mongoose, { Document, mongo } from 'mongoose';
 import User from '../../models/users';
 import UserInfo from '../../models/userInfos';
 
@@ -39,11 +39,14 @@ export default {
     },
     createUser: async (args: User, req: Request) => {
         const { email, password: pswd, ...rest } = args.InputUser;
+        const session = await mongoose.startSession();
         try {
+            session.startTransaction()
             const password: string = await hash(pswd, 12);
-            await (new User({ email, password })).save();
+            await (new User({ email, password })).save({ session });
             const newUser = new UserInfo({ email, ...rest });
-            return await newUser.save();
+            await session.commitTransaction();
+            return await newUser.save({ session });
         }
         catch (err) {
             throw err;

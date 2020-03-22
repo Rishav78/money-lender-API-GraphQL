@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import User from '../../models/userInfos';
 import Loan from '../../models/loans';
 
@@ -34,11 +34,16 @@ export default {
 
     createLoan: async (args: RequestLoan, req: request) => {
         const { moneylender, money, user }  = args.InputLoan;
+        const session = await mongoose.startSession();
         try {
+            session.startTransaction();
             if (!req.isAuth) {
                 throw new Error('unauthrized')
             }
             const newLoan: Document = new Loan({ moneylender, money, user });
+            await User.findByIdAndUpdate(moneylender, { $inc: { money: -money }, $push: { loans: newLoan._id } }, { session });
+            await User.findByIdAndUpdate(user, { $push: { loans: newLoan._id } }, { session });
+            await session.commitTransaction();
             return await newLoan.save();;
         }
         catch (err) {

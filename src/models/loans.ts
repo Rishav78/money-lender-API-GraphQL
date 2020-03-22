@@ -38,8 +38,6 @@ loansSchema.pre('save', async function(next: HookNextFunction) {
 
 loansSchema.pre('save', async function(next: HookNextFunction) {
     const { user, moneylender, money } = this as any;
-    await this.model('userinfos').findByIdAndUpdate(moneylender, { $inc: { money: -money }, $push: { loans: this._id } });
-    await this.model('userinfos').findByIdAndUpdate(user, { $push: { loans: this._id } });
     console.log(`user with id ${user} take loan of ${money} from moneylender having id ${moneylender}`);
     next();
 });
